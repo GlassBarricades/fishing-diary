@@ -1,9 +1,11 @@
 import { HeaderSimple } from "./components/Header";
 import HomePage from "./components/pages/HomePage";
 import ReservoirsPage from "./components/pages/ReservoirsPage";
+import ReservoirsSinglePage from "./components/pages/ReservoirsSinglePage";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Container } from "@mantine/core";
+import AdminPage from "./components/pages/AdminPage";
 
 function App() {
   const links = [
@@ -14,6 +16,10 @@ function App() {
     {
       link: "/reservoirs",
       label: "Водоёмы",
+    },
+    {
+      link: "/admin",
+      label: "Админка",
     },
   ];
 
@@ -61,8 +67,10 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route
               path="/reservoirs"
-              element={<ReservoirsPage data={reservoirs} />}
+              element={<ReservoirsPage data={reservoirs}/>}
             />
+            <Route path="/reservoirs/:uuid" element={<ReservoirsSinglePage data={reservoirs}/>} />
+            <Route path="/admin" element={<AdminPage />} />
           </Routes>
         </Container>
       </div>
