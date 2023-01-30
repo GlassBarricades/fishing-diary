@@ -7,7 +7,7 @@ import {
   Burger,
   Title,
   Anchor,
-  Modal,
+  Drawer,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { ThemeChange } from "./Theme-change";
@@ -67,45 +67,69 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export function HeaderSimple({ links }) {
-  const [openModal, setOpenModal] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState(false);
   const [opened, { toggle }] = useDisclosure(false, {
-    onOpen: () => setOpenModal(true),
-    onClose: () => setOpenModal(false),
+    onOpen: () => setOpenDrawer(true),
+    onClose: () => setOpenDrawer(false),
   });
   const [active, setActive] = useState(links[0].link);
   const { classes, cx } = useStyles();
 
   const itemHandler = (item) => {
     setActive(item.link);
-    setOpenModal(false);
+    setOpenDrawer(false);
     toggle();
   };
 
-  const items = links.map((link) => (
-    <Anchor
-      component={Link}
-      to={link.link}
-      key={link.label}
-      className={cx(classes.link, {
-        [classes.linkActive]: active === link.link,
-      })}
-      onClick={() => itemHandler(link)}
-    >
-      {link.label}
-    </Anchor>
-  ));
+  const createMenuItem = (mobile) => {
+    if (mobile) {
+      const items = links.map((link) => (
+        <Anchor
+          component={Link}
+          to={link.link}
+          key={link.label}
+          className={cx(classes.link, {
+            [classes.linkActive]: active === link.link,
+          })}
+          onClick={() => itemHandler(link)}
+        >
+          {link.label}
+        </Anchor>
+      ));
+      return items;
+    } else {
+      const items = links.map((link) => (
+        <Anchor
+          component={Link}
+          to={link.link}
+          key={link.label}
+          className={cx(classes.link, {
+            [classes.linkActive]: active === link.link,
+          })}
+          onClick={() => {
+            setActive(link.link);
+          }}
+        >
+          {link.label}
+        </Anchor>
+      ));
+      return items;
+    }
+  };
+  const mobileLinks = createMenuItem(true);
+  const desktopLinks = createMenuItem(false);
 
-  const closeModalHandler = () => {
-    setOpenModal(false);
+  const closeDrawerHandler = () => {
+    setOpenDrawer(false);
     toggle();
   };
 
   return (
-    <Header height={60} mb={120}>
+    <Header height={60} mb={10}>
       <Container className={classes.header}>
         <Title order={3}>FishingDiary</Title>
         <Group spacing={5} className={classes.links}>
-          {items}
+          {desktopLinks}
         </Group>
         <ThemeChange />
         <Burger
@@ -115,9 +139,15 @@ export function HeaderSimple({ links }) {
           size="sm"
         />
       </Container>
-      <Modal opened={openModal} onClose={closeModalHandler} title="Меню">
-        {items}
-      </Modal>
+      <Drawer
+        opened={openDrawer}
+        onClose={closeDrawerHandler}
+        title="Меню"
+        padding="xl"
+        size="full"
+      >
+        {mobileLinks}
+      </Drawer>
     </Header>
   );
 }
