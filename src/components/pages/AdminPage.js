@@ -99,7 +99,7 @@ const AdminPage = () => {
       </Modal>
 
       <Group position="center">
-        <Button onClick={() => setOpened(true)}>Open Modal</Button>
+        <Button onClick={() => setOpened(true)}>Добавить водоём</Button>
       </Group>
     </>
   );
